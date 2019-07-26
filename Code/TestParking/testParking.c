@@ -167,6 +167,31 @@ void smoothSteeringControl(signed short endAngle, signed short tick, int usleepT
     }
 }
 
+void loopCheckDistance(int sensorIndex, int wantDistance, bool isUp)
+{
+    if (isUp)
+    {
+        while (true)
+        {       
+            if (distance[sensorIndex] > wantDistance)
+                break;
+
+            usleep(10000);
+        }
+    }
+    else
+    {
+        while (true)
+        {
+            if (distance[sensorIndex] < wantDistance)
+                break;
+
+            usleep(10000);
+        }
+    }
+    
+}
+
 void main(void)
 {
     int ret;
@@ -208,71 +233,77 @@ void main(void)
 
     printf("Check 1st distance...\n");
 
-    while (true)
+    loopCheckDistance(1, 500, true);
+
+    /* while (true)
     {       
         if (distance[1] > 500)
             break;
 
         usleep(10000);
-    }
-
-    //SteeringServoControl_Write(1400);
+    }*/
 
     printf("Check 2nd distance...\n");
 
-    while (true)
+    loopCheckDistance(2, 500, true);
+
+    /*/while (true)
     {      
         if (distance[2] > 500)
             break;
 
         usleep(10000);
-    }
-
-    //SteeringServoControl_Write(1700);
+    }*/
 
     printf("Check 2nd distance...\n");
 
-    while (true)
+    loopCheckDistance(1, 500, false)
+
+    /*while (true)
     {      
         if (distance[1] < 500)
             break;
 
         usleep(10000);
-    }
-
-    //SteeringServoControl_Write(1550);
+    }*/
 
     printf("Check 2nd distance...\n");
 
-    while (true)
+    loopCheckDistance(1, 500, true);
+
+    /*/while (true)
     {      
         if (distance[1] > 500)
             break;
 
         usleep(10000);
-    }
+    }*/
 
     printf("Check 3rd distance...\n");
 
-    while (true)
+    loopCheckDistance(2, 500, true);
+
+    /*while (true)
     {
         if (distance[2] > 500)
             break;
         
         usleep(10000);
-    }
+    }*/
 
     SteeringServoControl_Write(1900);
 
     printf("Check 4rd distance...\n");
 
-    while (true)
+    loopCheckDistance(1, 300, true);
+
+    /*while (true)
     {
         if (distance[1] < 300)
             break;
         
         usleep(10000);
-    }
+    }*/
 
     usleep(200000);
     enablePositionSpeed = false;
@@ -288,58 +319,68 @@ void main(void)
 
     printf("Check 1st back distance...\n");
 
-    while (true)
+    loopCheckDistance(3, 750, true);
+
+    /*while (true)
     {
         if (distance[3] > 750)
             break;
         
         usleep(50000);
-    }
+    }*/
 
     
     SteeringServoControl_Write(1250);
 
     printf("Check 1st-2 back distance...\n");
 
-    while (true)
+    loopCheckDistance(3, 500, false);
+
+    /*while (true)
     {
         if (distance[3] < 500)
             break;
         
         usleep(50000);
-    }
+    }*/
 
-    while (true)
+    loopCheckDistance(3, 600, true);
+
+    /*while (true)
     {
         if (distance[3] > 600)
             break;
         
         usleep(50000);
-    }
+    }*/
 
     SteeringServoControl_Write(1950);
 
     printf("Check 2nd back distance...\n");
 
-    while (true)
+    loopCheckDistance(3, 1800, true);
+
+    /*while (true)
     {
         if (distance[3] > 1800)
             break;
         
         usleep(50000);
-    }
+    }*/
 
     printf("Check 3rd back distance...\n");
 
     SteeringServoControl_Write(1530);
 
-    while (true)
+    loopCheckDistance(3, 2100, true);
+
+    /*while (true)
     {
         if (distance[3] > 2100)
             break;
         
         usleep(50000);
-    }
+    }*/
 
     printf("Stop Vehicle!\n");
 
