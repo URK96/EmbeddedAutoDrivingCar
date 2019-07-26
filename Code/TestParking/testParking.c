@@ -65,7 +65,7 @@ void* positionSpeedControl(void *arg)
             position = posInit + posDes;
             DesireEncoderCount_Write(position);
 
-            position = DesireEncoderCount_Read();
+            //position = DesireEncoderCount_Read();
 
             //printf("abs(posRead-position) = %d\n", abs(posRead-position));
 
@@ -372,7 +372,7 @@ void main(void)
 
     SteeringServoControl_Write(1530);
 
-    loopCheckDistance(3, 2100, true);
+    loopCheckDistance(3, 2000, true);
 
     /*while (true)
     {
@@ -386,7 +386,7 @@ void main(void)
 
     speedPIDControl(0);
 
-    SteeringServoControl_Write(1100);
+    SteeringServoControl_Write(1000);
 
     enablePositionSpeed = true;
 
@@ -396,15 +396,21 @@ void main(void)
 
     SteeringServoControl_Write(1530);
 
-    speedPIDControl(-20);
+    speedPIDControl(-10);
 
-    loopCheckDistance(3, 2100, true);
+    loopCheckDistance(3, 2500, true);
 
     printf("Stop Vehicle!\n");
 
     speedPIDControl(0);
 
+    sleep(2);
 
+    SteeringServoControl_Write(2000);
+
+    enablePositionSpeed = true;
+
+    loopCheckDistance(3, 3500, true);
 }
 
 
