@@ -257,7 +257,7 @@ void main(void)
 
     printf("Check 2nd distance...\n");
 
-    loopCheckDistance(1, 500, false)
+    loopCheckDistance(1, 500, false);
 
     /*while (true)
     {      
@@ -385,6 +385,26 @@ void main(void)
     printf("Stop Vehicle!\n");
 
     speedPIDControl(0);
+
+    SteeringServoControl_Write(1100);
+
+    enablePositionSpeed = true;
+
+    loopCheckDistance(0, 2000, true);
+
+    enablePositionSpeed = false;
+
+    SteeringServoControl_Write(1530);
+
+    speedPIDControl(-20);
+
+    loopCheckDistance(3, 2100, true);
+
+    printf("Stop Vehicle!\n");
+
+    speedPIDControl(0);
+
+
 }
 
 
