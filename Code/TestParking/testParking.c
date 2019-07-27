@@ -196,6 +196,9 @@ void main(void)
 {
     int ret;
 
+
+    // Initiating control
+
     CarControlInit();
 
     endAngle = 1550;
@@ -207,6 +210,9 @@ void main(void)
     gain = 10;
     speed = 100;
     enablePositionSpeed = true;
+    
+
+    // Set thread
 
     ret = pthread_create(&threads[0], NULL, positionSpeedControl, NULL);
 
@@ -230,80 +236,39 @@ void main(void)
     //pthread_detach(threads[2]);
 
 
+    // 1st wall dectection
 
-    printf("Check 1st distance...\n");
+    printf("Check 1st Wall No.2 Sensor distance...\n");
 
     loopCheckDistance(1, 500, true);
 
-    /* while (true)
-    {       
-        if (distance[1] > 500)
-            break;
-
-        usleep(10000);
-    }*/
-
-    printf("Check 2nd distance...\n");
+    printf("Check 1st Wall No.3 Sensor distance...\n");
 
     loopCheckDistance(2, 500, true);
 
-    /*/while (true)
-    {      
-        if (distance[2] > 500)
-            break;
-
-        usleep(10000);
-    }*/
-
-    printf("Check 2nd distance...\n");
+    printf("Check 1st Wall No.2 Sensor distance...\n");
 
     loopCheckDistance(1, 500, false);
 
-    /*while (true)
-    {      
-        if (distance[1] < 500)
-            break;
 
-        usleep(10000);
-    }*/
+    // 2nd wall dectection
 
-    printf("Check 2nd distance...\n");
+    printf("Check 2nd Wall No.2 Sensor distance...\n");
 
     loopCheckDistance(1, 500, true);
 
-    /*/while (true)
-    {      
-        if (distance[1] > 500)
-            break;
-
-        usleep(10000);
-    }*/
-
-    printf("Check 3rd distance...\n");
+    printf("Check 2nd Wall No.3 Sensor distance...\n");
 
     loopCheckDistance(2, 500, true);
 
-    /*while (true)
-    {
-        if (distance[2] > 500)
-            break;
-        
-        usleep(10000);
-    }*/
-
     SteeringServoControl_Write(1900);
 
-    printf("Check 4rd distance...\n");
+    printf("Check 2nd Wall No.2 Sensor distance...\n");
 
     loopCheckDistance(1, 300, true);
 
-    /*while (true)
-    {
-        if (distance[1] < 300)
-            break;
-        
-        usleep(10000);
-    }*/
+
+    // Start backward movement
 
     usleep(200000);
     enablePositionSpeed = false;
@@ -317,72 +282,43 @@ void main(void)
 
     speedPIDControl(-30);
 
-    printf("Check 1st back distance...\n");
+
+    // Start check back wall (Entering)
+
+    printf("Check 1st Back Wall distance...\n");
 
     loopCheckDistance(3, 750, true);
-
-    /*while (true)
-    {
-        if (distance[3] > 750)
-            break;
-        
-        usleep(50000);
-    }*/
 
     
     SteeringServoControl_Write(1250);
 
-    printf("Check 1st-2 back distance...\n");
+    printf("Check 1st-2 Back Wall distance...\n");
 
     loopCheckDistance(3, 500, false);
 
-    /*while (true)
-    {
-        if (distance[3] < 500)
-            break;
-        
-        usleep(50000);
-    }*/
+    printf("Check 2nd Back Wall distance...\n");
 
     loopCheckDistance(3, 600, true);
 
-    /*while (true)
-    {
-        if (distance[3] > 600)
-            break;
-        
-        usleep(50000);
-    }*/
+
+    // Start cehck back wall (Handling)
 
     SteeringServoControl_Write(1950);
 
-    printf("Check 2nd back distance...\n");
+    printf("Check 3rd back distance...\n");
 
     loopCheckDistance(3, 1800, true);
 
-    /*while (true)
-    {
-        if (distance[3] > 1800)
-            break;
-        
-        usleep(50000);
-    }*/
-
-    printf("Check 3rd back distance...\n");
-
     SteeringServoControl_Write(1530);
+
+    printf("Check 4rd back distance...\n");
 
     loopCheckDistance(3, 2000, true);
 
-    /*while (true)
-    {
-        if (distance[3] > 2100)
-            break;
-        
-        usleep(50000);
-    }*/
-
     printf("Stop Vehicle!\n");
+
+
+    // Start line up vehicle (Forward)
 
     speedPIDControl(0);
 
@@ -393,6 +329,9 @@ void main(void)
     loopCheckDistance(0, 2000, true);
 
     enablePositionSpeed = false;
+
+
+    // Start line up vehicle (Backward)
 
     SteeringServoControl_Write(1530);
 
@@ -406,11 +345,19 @@ void main(void)
 
     sleep(2);
 
+
+    // Start exit parking area
+
     SteeringServoControl_Write(2000);
 
     enablePositionSpeed = true;
 
-    loopCheckDistance(3, 3500, true);
+    loopCheckDistance(3, 1000, false);
+
+    SteeringServoControl_Write(1100);
+
+
+    // Other code is running with camera
 }
 
 
