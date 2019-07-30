@@ -125,6 +125,7 @@ void* checkDistance(void *arg)
             distance[i] = DistanceSensor(channel[i]);
 
         printf("%d %d %d %d %d %d\n", distance[0], distance[1], distance[2], distance[3], distance[4], distance[5]);
+        //fprintf("%d %d %d %d %d %d\n", distance[0], distance[1], distance[2], distance[3], distance[4], distance[5])
         usleep(100000);
     }
 }
@@ -192,50 +193,8 @@ void loopCheckDistance(int sensorIndex, int wantDistance, bool isUp)
     
 }
 
-void main(void)
+void ParallelParking()
 {
-    int ret;
-
-
-    // Initiating control
-
-    CarControlInit();
-
-    endAngle = 1550;
-    SteeringServoControl_Write(1530);
-
-    tol = 100;
-    posInit = 0;
-    posDes = 150;
-    gain = 10;
-    speed = 100;
-    enablePositionSpeed = true;
-    
-
-    // Set thread
-
-    ret = pthread_create(&threads[0], NULL, positionSpeedControl, NULL);
-
-    if (ret)
-        MSG("Failed creating capture thread");
-    
-    pthread_detach(threads[0]);
-
-    ret = pthread_create(&threads[1], NULL, checkDistance, NULL);
-
-    if (ret)
-        MSG("Failed creating capture thread");
-    
-    pthread_detach(threads[1]);
-
-    //ret = pthread_create(&threads[2], NULL, smoothSteeringControl, NULL);
-
-    if (ret)
-        MSG("Failed creating capture thread");
-    
-    //pthread_detach(threads[2]);
-
-
     // 1st wall dectection
 
     printf("Check 1st Wall No.2 Sensor distance...\n");
@@ -358,7 +317,139 @@ void main(void)
 
 
     // Other code is running with camera
+
 }
 
+void VerticalParking()
+{
+    // 1st wall dectection
 
+    printf("Check 1st Wall No.2 Sensor distance...\n");
+
+    loopCheckDistance(1, 500, true);
+
+    printf("Check 1st-2 Wall No.2 Sensor distance...\n");
+
+    loopCheckDistance(1, 500, false);
+
+
+
+    // 2nd wall dectection
+
+    printf("Check 2nd Wall No.2 Sensor distance...\n");
+
+    loopCheckDistance(1, 500, true);
+
+    SteeringServoControl_Write(2000);
+
+    printf("Check 2nd-2 Wall No.2 Sensor distance...\n");
+
+    usleep(1500000);
+
+
+    // Start backward movement
+
+    enablePositionSpeed = false;
+    printf("Stop Vehicle!\n");
+
+    SteeringServoControl_Write(1100);
+
+    propGain = 20;
+    integralGain = 20;
+    differentialGain = 20;
+
+    speedPIDControl(-30);
+
+
+    // Start check back wall (Entering)
+
+    printf("Check 1st Side Wall distance...\n");
+
+    sleep(2);
+
+    loopCheckDistance(4, 1800, true);
+
+    SteeringServoControl_Write(1300);
+
+    //loopCheckDistance(3, 500, false);
+
+    //loopCheckDistance(3, 700, true);
+
+    usleep(500000);
+
+    SteeringServoControl_Write(1530);
+
+    speedPIDControl(-20);
+
+    loopCheckDistance(3, 4000, true);
+
+    speedPIDControl(0);
+
+    printf("Stop Vehicle!\n");
+
+    sleep(2);
+
+    /*enablePositionSpeed = true;
+
+    loopCheckDistance(1, 500, false);
+
+    SteeringServoControl_Write(1100);
+
+    loopCheckDistance(4, 500, false);
+
+    SteeringServoControl_Write(1400);
+
+    usleep(500000);
+
+    SteeringServoControl_Write(1530);*/
+}
+
+int main(void)
+{
+    int ret;
+
+
+    // Initiating control
+
+    CarControlInit();
+
+    endAngle = 1550;
+    SteeringServoControl_Write(1530);
+
+    tol = 100;
+    posInit = 0;
+    posDes = 150;
+    gain = 10;
+    speed = 100;
+    enablePositionSpeed = true;
+    
+
+    // Set thread
+
+    ret = pthread_create(&threads[0], NULL, positionSpeedControl, NULL);
+
+    if (ret)
+        MSG("Failed creating capture thread");
+    
+    pthread_detach(threads[0]);
+
+    ret = pthread_create(&threads[1], NULL, checkDistance, NULL);
+
+    if (ret)
+        MSG("Failed creating capture thread");
+    
+    pthread_detach(threads[1]);
+
+    //ret = pthread_create(&threads[2], NULL, smoothSteeringControl, NULL);
+
+    if (ret)
+        MSG("Failed creating capture thread");
+    
+    //pthread_detach(threads[2]);
+
+    //ParallelParking();
+    VerticalParking();
+
+    return 0;
+}
 
